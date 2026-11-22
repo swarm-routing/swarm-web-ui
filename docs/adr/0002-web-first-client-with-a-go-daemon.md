@@ -1,6 +1,7 @@
 # 0002. Build a web-first client with a Go daemon; Tauri or a PWA only as a wrapper; no Electron
 
-- **Status:** accepted (the maintainer, 2026-11-22: "Accept the ADR")
+- **Status:** accepted (the maintainer, 2026-11-22: "Accept the ADR"; and
+  the languages the same day: "Keep Go, record TypeScript for the frontend")
 - **Date:** 2026-11-22
 - **Issue:** #6
 
@@ -45,12 +46,17 @@ Containerlab) all put a browser client in front of a server or daemon.
 The size figures are the survey's estimates, not measured here.
 
 **Constraints already decided.** Org ADR-0002: pipelines are written in Go.
-Decision 5 and 17 (swarm-routing/.github#672): this repository is the
+Decisions 5 and 17 (swarm-routing/.github#672): this repository is the
 workbench, `MIT OR GPL-2.0-only` written fresh, deploys no Pages (its demo
 is served under the Colony Arena site at a pinned commit); neither it nor the
 site holds routing logic, and every number shown comes from benchmarks data
 or `bench_parse` (site golden rules 10-12, sim-tools golden rule 13).
-Decision 16: sim-tools owns the `scenario.v1`, probe and `summary.v1`
+The licence boundary goes one way (org golden rule 2): GPL-2.0-only code may
+use the dual-licensed parts, never the reverse. A directory here that embeds
+the Colony Arena site's GPL-2.0-only renderer is itself GPL-2.0-only, with
+its own row in `LICENSING.md`; no `MIT OR GPL-2.0-only` code imports from
+it, and a dependency is taken into a dual directory only if its licence is
+compatible with both. Decision 16: sim-tools owns the `scenario.v1`, probe and `summary.v1`
 schemas (swarm-routing/sim-tools#279).
 
 ## Decision
@@ -58,27 +64,42 @@ schemas (swarm-routing/sim-tools#279).
 1. **The client is a web application** (a single-page app) served by the
    daemon, or as static files for the offline replay. It runs in any current
    browser, locally, in WSL2 or against a remote server over an SSH tunnel.
-2. **The daemon is written in Go**, following org ADR-0002, not FastAPI. It
-   exposes REST and WebSocket APIs, binds to the loopback address by
+2. **The frontend is written in TypeScript**, with React and Vite. Its types
+   are generated from sim-tools' JSON Schemas (`scenario.v1`, `probes.v1`,
+   `summary.v1`), so the UI and the contracts cannot drift (#7). The
+   protocols' C++ cores run in the browser only as WebAssembly, the way the
+   Colony Arena site runs AntHocNet's. The UI itself is not written in a
+   language compiled to WebAssembly (Rust/Yew, Go, Blazor): their UI
+   ecosystems are thin and the visualisation libraries below are missing.
+3. **The daemon is written in Go** (org ADR-0002), not FastAPI and not
+   Node.js, because Go gives:
+   - a single static binary with no runtime npm dependency tree, a smaller
+     supply-chain surface (the org's goal of no open critical or high
+     vulnerabilities, and its OpenSSF Scorecard);
+   - reuse of the org's Go tools and the `ci-tools` image;
+   - a native Docker/Podman client;
+   - concurrent streaming of logs, progress and probe frames.
+
+   It exposes REST and WebSocket APIs, binds to the loopback address by
    default, and runs `sim-tools run` in sim-containers images by digest. It
-   imports no Python: it shares sim-tools' contracts through the same JSON
-   Schema files, not through code.
-3. **No Electron.** A desktop form, if wanted, wraps the same built client
+   imports no Python and no TypeScript: the shared contract is the JSON
+   Schema, not a language.
+4. **Node.js was considered for the daemon and rejected**, for the reasons
+   in item 3. **Node.js is build-time tooling only** (Vite, tests, lint): it
+   is never shipped and never runs in production.
+5. **No Electron.** A desktop form, if wanted, wraps the same built client
    in **Tauri** or installs it as a **PWA**, adding no UI code of its own
    (#23).
-4. **The stack:** React + TypeScript + Vite; React Flow for topology
-   editing (Cytoscape.js the alternative); PixiJS for 2D playback (Deck.gl or
-   Three.js only if a 3D view is planned); uPlot for dense time series and
-   Apache ECharts for summary and confidence-interval charts; xterm.js for
-   node consoles. A change of library is a new ADR or an amendment here.
-5. **Types come from the schemas.** TypeScript types and the runtime
-   validator are generated from sim-tools' vendored JSON Schema files,
-   never written by hand (#7).
-6. **An escape hatch is part of the design**: a raw-config tab on the
+6. **The libraries:** React Flow for topology editing (Cytoscape.js the
+   alternative); PixiJS for 2D playback (Deck.gl or Three.js only if a 3D
+   view is planned); uPlot for dense time series and Apache ECharts for
+   summary and confidence-interval charts; xterm.js for node consoles. A
+   change of library is a new ADR that supersedes this one.
+7. **An escape hatch is part of the design**: a raw-config tab on the
    scenario (#17) and "Export native project" through the simulator's
    `SimAdapter` in sim-tools (#21). The UI holds no simulator-specific
    translation.
-7. **The UI draws and charts what it is given**: no routing logic, no
+8. **The UI draws and charts what it is given**: no routing logic, no
    statistic of its own, replay deterministic for a given bundle and time
    (#13), accessibility checked on every PR (#14).
 
@@ -93,7 +114,18 @@ schemas (swarm-routing/sim-tools#279).
   fixtures).
 - The daemon's socket access is root-equivalent on the host, so it listens
   on loopback only and remote use goes through SSH port-forwarding (#20,
-  `SECURITY.md`).
+  `SECURITY.md`). Loopback does not stop a web page in the user's own
+  browser from sending requests to `localhost`, and a WebSocket handshake
+  has no CORS preflight, so the daemon checks the `Origin` header itself on
+  every HTTP and WebSocket request: it accepts only the origin it serves the
+  client from (and a configured wrapper origin, #23) and rejects every other
+  origin, privileged operations included. The check defends against
+  browser-initiated requests only; a non-browser client can forge `Origin`,
+  so for those the access control remains the loopback bind and the SSH
+  tunnel, which only users of that host can reach.
+- The frontend's npm dependencies are build-time only: what ships is the
+  static bundle Vite produces and the Go binary, so no npm package runs on a
+  user's host.
 - Electron, a bundled browser runtime and a desktop-only client are ruled
   out; a desktop wrapper is optional and never forks the UI.
 - Nothing here schedules work: the children of #1 and #2 stay deferred
