@@ -13,20 +13,16 @@ own changes, and why. The org's rule and its decision table are in
 ([ADR-0003](https://github.com/swarm-routing/.github/blob/main/docs/adr/0003-rcapa-for-ns3-bugs-and-released-regressions.md)).
 This page is the project's flow and its index.
 
-<!-- Seeded by org-sync from swarm-routing/.github templates/rcapa/README.md;
-the repository's own from here. Replace every TODO with this project's facts
-(its AGENTS.md, release.yml and docs), then delete this comment. -->
-
 ## The flow for this project
 
 | | |
 |---|---|
-| Published as | TODO: the versions other projects consume and who pins them (a lock, PyPI, a vcpkg port), or "RCAPA does not apply: <reason>" |
-| ID prefix | TODO: `<PREFIX>-NNN` (CONTRIBUTING "RCAPA", the prefix table) |
-| Ticket | an issue in swarm-routing/swarm-web-ui, form *Regression in a release (RCAPA)*, title `[rcapa] <PREFIX>-NNN <short description>`, labels `rcapa` and `bug` |
-| Verified by | TODO: the consumer's failing check on the new version against the old one, and this project's own gates |
-| Corrective action | TODO: the fix and its test, and how a fixed release is cut |
-| Preventive action | TODO: the check that would have caught it before the release |
+| Published as | RCAPA does not apply yet: nothing is released, so no other project consumes a version. It applies from the first release on |
+| ID prefix | none yet: one is added to CONTRIBUTING's prefix table with the first release (CONTRIBUTING "RCAPA") |
+| Ticket | an issue in swarm-routing/swarm-web-ui, form *Regression in a release (RCAPA)*, title `[rcapa] <PREFIX>-NNN <short description>` (the prefix above, once assigned), labels `rcapa` and `bug` |
+| Verified by | from the first release: the consumer's failing check on the new version against the old one, and this repository's own required checks |
+| Corrective action | from the first release: the fix with its test, then a patch release (CONTRIBUTING "Cutting a release") |
+| Preventive action | from the first release: the check that would have caught it before the release, added to CI |
 | Closes when | the fix is merged **and** a release of the channel above carries it |
 
 ```mermaid

@@ -1,77 +1,78 @@
 # Developer guide
 
-<!--
-The org's skeleton for docs/development.md (swarm-routing/.github#490), an
-org-sync seed: written once, then the repository's own. Keep every `##`
-heading below, in this order: tools/docs-review/check_docs.py fails when one
-is missing. Fill each from what actually runs today (the commands CI
-runs, the Makefile, AGENTS.md "Build & verify"); never invent a command. Mark a
-step that only CI can run with the workflow that runs it. Write for a person
-new to the repository: plain sentences, every command copy-pasteable. A
-heading with nothing to say for this repository keeps one sentence saying so.
-Delete this comment.
--->
-
-What this repository is in one or two sentences, and what a contributor
-usually changes here.
+swarm-web-ui is planned (swarm-routing/.github#672): no code is here yet, only the
+org's templates and settings. This guide says what runs today; each section
+grows with the code. What it will hold: the web frontend and its daemon.
 
 ## Prerequisites
 
-The operating system, compiler and C++ standard, CMake, Python, Node,
-Docker, emsdk: what this repository needs, each with the version CI uses.
+GNU Make, git, Python 3.11 or newer (the org tooling `make check` fetches),
+and Docker for `make shell`. Nothing else until code lands.
 
 ## Get the code
 
 ```bash
 git clone https://github.com/swarm-routing/swarm-web-ui.git
-cd "$(basename swarm-routing/swarm-web-ui)"
+cd swarm-web-ui
 ```
 
-Submodules, sibling checkouts or forks the work needs.
+No submodules or sibling checkouts are needed.
 
 ## Dependencies
 
-Where each dependency comes from: the release locks today (CONTRIBUTING
-"Dependencies"), the vcpkg registry once swarm-routing/.github#489 rolls out,
-ns-3 through the `ghcr.io/swarm-routing/ns3-dev` images.
+None yet. `make check` fetches swarm-routing/.github's tooling into
+`~/.cache/swarm-routing/dotgithub` (the licence-header gate and org-sync).
 
 ## Build
 
-The build, smallest first (a simulator-free `core/` alone, then the ns-3
-module in an ns3-dev container, then anything else).
+Nothing to build yet: `make build` and `make test` have nothing to do yet.
 
 ## Test
 
-Every test suite, how to run it locally, and which of them CI runs.
+`make check` is the gate today: lint, test, licence headers and the
+org-sync check, as CI runs them.
+
+```bash
+make check
+```
 
 ## Run
 
-How to run what the repository produces (an example, the harness, a campaign
-cell, the site), with one command that works.
+Nothing runs yet.
 
 ## Docker and dev containers
 
-The images this repository builds or uses, and how to work inside one;
-`.devcontainer/` if it has one.
+`make shell` opens a shell in the `ghcr.io/swarm-routing/ns3-dev` image
+with this repository at `/src`. There is no `.devcontainer/`.
 
 ## Lint and format
 
-clang-format, clang-tidy, ruff, licence headers: the commands CI runs.
+`make lint` (clang-format on any C++ files) and `make format`. Licence
+headers: `make headers`, the org's `check-headers` gate.
 
 ## CI map
 
 | Workflow | What it checks | Required |
 | --- | --- | --- |
-| `name.yml` | ... | yes / no |
+| `org-sync.yml` | the org-managed files match the pinned templates | yes (`check / org-sync`) |
+| `licence.yml` | SPDX headers and the licence texts | yes (`headers / licence`) |
+| `pr-title.yml` | the PR title is a lowercase Conventional Commit | yes (`title / title`) |
+| `review-gate.yml` | CodeRabbit has reviewed the PR | yes (`review / coderabbit`) |
+| `dco.yml` | an outside contributor signed off | no |
+| `scorecard.yml`, `bestpractices-evidence.yml` | OpenSSF Scorecard; best-practices evidence | no |
+| `settings-apply.yml`, `epics-changed.yml` | nudge the org's repo-settings and epic lists | no |
 
 The required checks are the ones the `main` ruleset lists (`gh api
-repos/swarm-routing/swarm-web-ui/rules/branches/main`).
+repos/swarm-routing/swarm-web-ui/rules/branches/main`), applied from
+`.github/org-sync.toml` `[settings]`.
 
 ## Release
 
-How a version is cut: [CONTRIBUTING "Cutting a release"](https://github.com/swarm-routing/.github/blob/main/CONTRIBUTING.md#cutting-a-release),
-and what a release of this repository publishes.
+Nothing is released yet. A version is cut as
+[CONTRIBUTING "Cutting a release"](https://github.com/swarm-routing/.github/blob/main/CONTRIBUTING.md#cutting-a-release)
+says, once a `release.yml` and a ladder in `docs/roadmap.md` exist.
 
 ## Troubleshooting
 
-The failures a newcomer meets, each with its cause and fix.
+- `make check` fails fetching the org tooling: it needs network access to
+  github.com.
