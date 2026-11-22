@@ -1,7 +1,10 @@
 # 0002. Build a web-first client with a Go daemon; Tauri or a PWA only as a wrapper; no Electron
 
 - **Status:** accepted (the maintainer, 2026-11-22: "Accept the ADR"; and
-  the languages the same day: "Keep Go, record TypeScript for the frontend")
+  the languages the same day: "Keep Go, record TypeScript for the frontend";
+  and one service: "The same service that will have the backend for UI will
+  manage the front end, we should not have two services running in
+  different ports")
 - **Date:** 2026-11-22
 - **Issue:** #6
 
@@ -87,19 +90,35 @@ schemas (swarm-routing/sim-tools#279).
 4. **Node.js was considered for the daemon and rejected**, for the reasons
    in item 3. **Node.js is build-time tooling only** (Vite, tests, lint): it
    is never shipped and never runs in production.
-5. **No Electron.** A desktop form, if wanted, wraps the same built client
+5. **One process, one port.** The Go daemon serves the built TypeScript
+   frontend, embedded in its binary with `go:embed` from the Vite build
+   output, and on the same port the REST API under `/api/` and the WebSocket
+   streams under `/ws/`. There is no separate frontend server. One origin
+   means no CORS configuration, no second process to start or secure, and
+   one port to forward over SSH (`ssh -L 8080:localhost:8080`); one static
+   binary is the whole product, and the same container image runs it.
+   - **Development only:** a Vite dev server with hot reload may proxy
+     `/api` and `/ws` to the daemon. It is never shipped or run in
+     production (item 4).
+   - **The offline replay (#1) is unaffected:** the same frontend build also
+     deploys as static files, served under the Colony Arena site at a pinned
+     commit (decision 17: this repository deploys no Pages of its own) or
+     opened from a local file, to replay artifact bundles with no daemon.
+     The frontend detects whether the API is present and offers only the
+     replay views when it is not.
+6. **No Electron.** A desktop form, if wanted, wraps the same built client
    in **Tauri** or installs it as a **PWA**, adding no UI code of its own
    (#23).
-6. **The libraries:** React Flow for topology editing (Cytoscape.js the
+7. **The libraries:** React Flow for topology editing (Cytoscape.js the
    alternative); PixiJS for 2D playback (Deck.gl or Three.js only if a 3D
    view is planned); uPlot for dense time series and Apache ECharts for
    summary and confidence-interval charts; xterm.js for node consoles. A
    change of library is a new ADR that supersedes this one.
-7. **An escape hatch is part of the design**: a raw-config tab on the
+8. **An escape hatch is part of the design**: a raw-config tab on the
    scenario (#17) and "Export native project" through the simulator's
    `SimAdapter` in sim-tools (#21). The UI holds no simulator-specific
    translation.
-8. **The UI draws and charts what it is given**: no routing logic, no
+9. **The UI draws and charts what it is given**: no routing logic, no
    statistic of its own, replay deterministic for a given bundle and time
    (#13), accessibility checked on every PR (#14).
 
@@ -124,8 +143,8 @@ schemas (swarm-routing/sim-tools#279).
   so for those the access control remains the loopback bind and the SSH
   tunnel, which only users of that host can reach.
 - The frontend's npm dependencies are build-time only: what ships is the
-  static bundle Vite produces and the Go binary, so no npm package runs on a
-  user's host.
+  static bundle Vite produces, embedded in the Go binary, so no npm package
+  runs on a user's host.
 - Electron, a bundled browser runtime and a desktop-only client are ruled
   out; a desktop wrapper is optional and never forks the UI.
 - Nothing here schedules work: the children of #1 and #2 stay deferred
