@@ -1,3 +1,29 @@
 # swarm-web-ui
 
-The swarm-routing web workbench (swarm-routing/.github#674). Planned.
+<!-- org-sync:begin badges -->
+| Group | Badges |
+| --- | --- |
+| Release | [![Licence: MIT OR GPL-2.0-only](https://img.shields.io/badge/licence-MIT%20OR%20GPL--2.0--only-blue)](LICENSING.md) |
+| Trust | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/swarm-routing/swarm-web-ui/badge)](https://scorecard.dev/viewer/?uri=github.com/swarm-routing/swarm-web-ui) |
+| Community & docs | [![Open RCAPA](https://img.shields.io/github/issues/swarm-routing/swarm-web-ui/rcapa?label=open%20RCAPA&color=blue)](https://github.com/swarm-routing/swarm-web-ui/blob/main/docs/rcapa/README.md) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow)](https://www.conventionalcommits.org) |
+<!-- org-sync:end badges -->
+
+swarm-web-ui, the org's unified web frontend (swarm-routing/.github#674): first an offline replay of standardized artifact bundles (`probes.v1.jsonl`, `summary.v1.json`) with a topology and mobility playback canvas and paired-delta KPI charts; then a lightweight daemon to author scenarios and run them in sim-containers images.
+
+**Status: planned.** Nothing is built yet; the plan is #1 and swarm-routing/.github#672 and swarm-routing/.github#674.
+
+<!-- org-sync:begin develop -->
+## Develop
+
+New here? [docs/development.md](docs/development.md) is the developer guide:
+the tools to install, how to get the code and its dependencies, how to
+build, test, run and lint it, the Docker images, what CI checks and how to
+read a red run. How changes are proposed, reviewed and released is the org's
+[CONTRIBUTING.md](https://github.com/swarm-routing/.github/blob/main/CONTRIBUTING.md).
+Whether a regression here gets an RCAPA (root cause analysis with corrective
+and preventive actions), and how: [docs/rcapa/README.md](docs/rcapa/README.md).
+<!-- org-sync:end develop -->
+
+## Licence
+
+MIT OR GPL-2.0-only, the whole repository: see [LICENSING.md](LICENSING.md).

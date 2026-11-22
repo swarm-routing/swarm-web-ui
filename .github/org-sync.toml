@@ -1,0 +1,17 @@
+# org-sync configuration (swarm-routing/.github tools/org-sync).
+kind = "site"
+title = "swarm-web-ui"
+dual = [""]
+
+[settings]
+# GitHub settings as code: swarm-routing/.github tools/repo-settings (swarm-routing/.github#117).
+description = "swarm-web-ui, the swarm-routing web workbench: offline replay of simulation artifact bundles (topology and mobility playback, paired-delta KPI charts), then a local control plane to author scenarios and launch runs in sim-containers (planned)."
+homepage = ""  # none until the site lists it (swarm-routing/swarm-routing.github.io site/hub/projects.json)
+topics = ["web-ui", "visualization", "network-simulation", "manet", "swarm-intelligence", "react", "typescript", "benchmarking"]
+ruleset = "site"
+# Only checks that run on every PR today. Add the build and test checks (core, ns-3, ...)
+# once their workflows exist and run on pull_request and merge_group.
+required_checks = ["check / org-sync", "headers / licence", "title / title", "review / coderabbit"]
+# Merge through a merge queue (swarm-routing/.github#130); every workflow behind a required
+# check also runs on merge_group.
+merge_queue = true
