@@ -116,10 +116,22 @@ schemas (swarm-routing/sim-tools#279).
   on loopback only and remote use goes through SSH port-forwarding (#20,
   `SECURITY.md`). Loopback does not stop a web page in the user's own
   browser from sending requests to `localhost`, and a WebSocket handshake
-  has no CORS preflight, so the daemon checks the `Origin` header itself on
-  every HTTP and WebSocket request: it accepts only the origin it serves the
-  client from (and a configured wrapper origin, #23) and rejects every other
-  origin, privileged operations included. The check defends against
+  has no CORS preflight, so the daemon checks the request itself. The
+  allowed origin is the one it serves the client from (and a configured
+  wrapper origin, #23). Browsers omit `Origin` on same-origin `GET` and
+  `HEAD`, so the policy is:
+  - any request whose `Origin` is present and not allowed is rejected;
+  - a WebSocket upgrade under `/ws/` and every request that changes state
+    (any method other than `GET` or `HEAD`, which browsers send with
+    `Origin`) is rejected unless `Origin` is present and allowed;
+  - `GET` and `HEAD` without `Origin` are served: the static assets, and
+    `/api/` reads, which are side-effect free and return JSON with
+    `X-Content-Type-Options: nosniff`, so a page elsewhere cannot run or
+    read them;
+  - the `Host` header must name the loopback address the daemon is bound to
+    (or the configured one), against DNS rebinding.
+
+  The check defends against
   browser-initiated requests only; a non-browser client can forge `Origin`,
   so for those the access control remains the loopback bind and the SSH
   tunnel, which only users of that host can reach.
