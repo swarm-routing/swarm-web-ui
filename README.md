@@ -5,7 +5,7 @@
 | --- | --- |
 | Release | [![Licence: MIT OR GPL-2.0-only](https://img.shields.io/badge/licence-MIT%20OR%20GPL--2.0--only-blue)](LICENSING.md) |
 | Trust | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/swarm-routing/swarm-web-ui/badge)](https://scorecard.dev/viewer/?uri=github.com/swarm-routing/swarm-web-ui) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17078/badge)](https://www.bestpractices.dev/projects/17078) |
-| Community & docs | [![Open RCAPA](https://img.shields.io/github/issues/swarm-routing/swarm-web-ui/rcapa?label=open%20RCAPA&color=blue)](https://github.com/swarm-routing/swarm-web-ui/blob/main/docs/rcapa/README.md) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow)](https://www.conventionalcommits.org) |
+| Community & docs | [![Colony Arena: swarm-web-ui](https://img.shields.io/badge/Colony%20Arena-project%20page-orange)](https://swarm-routing.github.io/projects/swarm-web-ui/) [![Open RCAPA](https://img.shields.io/github/issues/swarm-routing/swarm-web-ui/rcapa?label=open%20RCAPA&color=blue)](https://github.com/swarm-routing/swarm-web-ui/blob/main/docs/rcapa/README.md) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow)](https://www.conventionalcommits.org) |
 <!-- org-sync:end badges -->
 
 swarm-web-ui, the org's unified web frontend (swarm-routing/.github#674): first an offline replay of standardized artifact bundles (`probes.v1.jsonl`, `summary.v1.json`) with a topology and mobility playback canvas and paired-delta KPI charts; then a lightweight daemon to author scenarios and run them in sim-containers images.

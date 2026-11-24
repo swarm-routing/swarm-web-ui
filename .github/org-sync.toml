@@ -5,10 +5,13 @@ bestpractices_project = "17078"
 title = "swarm-web-ui"
 dual = [""]
 
+[docs]
+arena_id = "swarm-web-ui"  # its id in swarm-routing.github.io site/hub/projects.json (swarm-routing/swarm-routing.github.io#312)
+
 [settings]
 # GitHub settings as code: swarm-routing/.github tools/repo-settings (swarm-routing/.github#117).
 description = "swarm-web-ui, the swarm-routing web workbench: offline replay of simulation artifact bundles (topology and mobility playback, paired-delta KPI charts), then a local control plane to author scenarios and launch runs in sim-containers (planned)."
-homepage = ""  # none until the site lists it (swarm-routing/swarm-routing.github.io site/hub/projects.json)
+homepage = "https://swarm-routing.github.io/projects/swarm-web-ui/"
 topics = ["web-ui", "visualization", "network-simulation", "manet", "swarm-intelligence", "react", "typescript", "benchmarking"]
 ruleset = "site"
 # Only checks that run on every PR today. Add the build and test checks (core, ns-3, ...)
