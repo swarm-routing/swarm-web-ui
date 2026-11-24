@@ -11,9 +11,9 @@ What installing will look like, per
   static files, served under the Colony Arena site at a pinned commit; open it
   in a browser and load an artifact bundle (`probes.v1.jsonl`,
   `summary.v1.json`).
-- **Live runs** (v0.2.0, *proposed*): one Go binary, the daemon, which
-  serves the same frontend (`go:embed`) and its API on one port, and runs
-  scenarios in sim-containers images, so Docker is required. Node.js and npm
-  are build-time tooling only, never needed to run it.
+- **Live runs** (v0.2.0, *proposed*): one Go daemon that serves the same
+  frontend and runs `sim-tools run` in sim-containers images by digest,
+  through its native Docker/Podman client. Node.js and npm are build-time
+  tooling only, never needed to run it.
 
 To work on the repository, see [development.md](development.md).
