@@ -5,9 +5,11 @@
 - **Date:** 2026-11-22
 - **Issue:** #6
 
-Only the decision is accepted. The UI track stays deferred under decision 23
-of swarm-routing/.github#672: none of #1's or #2's children is scheduled
-until the maintainer re-plans the track.
+Only the decision is accepted. The UI track was deferred under decision 23
+of swarm-routing/.github#672. Decision 23 was amended on 2026-11-24 (the
+maintainer, on swarm-routing/.github#881; ROADMAP, swarm-routing/.github#893):
+setup and a building, tested skeleton (#8) go ahead; the rest of #1 and #2,
+releases and `release:*` labels wait for the maintainer.
 
 ## Context
 
@@ -140,5 +142,6 @@ schemas (swarm-routing/sim-tools#279).
   user's host.
 - Electron, a bundled browser runtime and a desktop-only client are ruled
   out; a desktop wrapper is optional and never forks the UI.
-- Nothing here schedules work: the children of #1 and #2 stay deferred
-  under decision 23 until the maintainer re-plans the track.
+- Nothing here schedules work beyond the skeleton: the other children of #1
+  and #2 stay deferred under decision 23 (amended 2026-11-24 for setup and
+  skeletons only) until the maintainer re-plans the track.

@@ -1,13 +1,15 @@
 # Developer guide
 
-swarm-web-ui is planned (swarm-routing/.github#672): no code is here yet, only the
-org's templates and settings. This guide says what runs today; each section
-grows with the code. What it will hold: the web frontend and its daemon.
+swarm-web-ui holds the skeleton of its web frontend (`frontend/`, #8:
+React, TypeScript and Vite, ADR-0002); the Go daemon (#16) is not here yet.
+This guide says what runs today; each section grows with the code.
 
 ## Prerequisites
 
 GNU Make, git, Python 3.11 or newer (the org tooling `make check` fetches),
-and Docker for `make shell`. Nothing else until code lands.
+Node.js 22 or newer with npm (build-time only: `frontend/.nvmrc`), and Docker
+for `make shell`. The browser smoke needs a Chromium: `npx playwright-core
+install chromium` in `frontend/`, or `CHROMIUM=/path/to/chrome`.
 
 ## Get the code
 
@@ -20,25 +22,36 @@ No submodules or sibling checkouts are needed.
 
 ## Dependencies
 
-None yet. `make check` fetches swarm-routing/.github's tooling into
-`~/.cache/swarm-routing/dotgithub` (the licence-header gate and org-sync).
+The frontend's npm packages, every version pinned exactly in
+`frontend/package.json` and locked in `frontend/package-lock.json`; the make
+targets install them with `npm ci`. Add one with `npm install --save-exact`
+(`frontend/.npmrc` sets it). `make check` also fetches swarm-routing/.github's
+tooling into `~/.cache/swarm-routing/dotgithub` (the licence-header gate and
+org-sync).
 
 ## Build
 
-Nothing to build yet: `make build` and `make test` have nothing to do yet.
+`make build` runs `vite build` into `frontend/dist`: static files with
+relative asset paths, the one artifact (ADR-0002 item 5).
 
 ## Test
 
-`make check` is the gate today: lint, test, licence headers and the
-org-sync check, as CI runs them.
+`make test` runs `tsc --noEmit` and the Vitest unit tests; `make smoke`
+builds, then opens the build in headless Chromium and fails on a console
+error or a serious or critical axe-core violation (`frontend/test/smoke.mjs`,
+as the Colony Arena site's smoke). `make check` is the local gate: lint,
+test, licence headers and the org-sync check.
 
 ```bash
 make check
+make smoke    # CHROMIUM=/path/to/chrome to use a local browser
 ```
 
 ## Run
 
-Nothing runs yet.
+`cd frontend && npm run dev` serves the client with hot reload; it proxies
+`/api` and `/ws` to `SWARM_WEB_UI_DAEMON` (default `http://127.0.0.1:8080`).
+With no daemon the page offers only the replay views.
 
 ## Docker and dev containers
 
@@ -47,13 +60,17 @@ with this repository at `/src`. There is no `.devcontainer/`.
 
 ## Lint and format
 
-`make lint` (clang-format on any C++ files) and `make format`. Licence
-headers: `make headers`, the org's `check-headers` gate.
+`make lint`: actionlint, ESLint, Prettier (`--check`) and
+`tools/check-web-headers.py`; `make format` applies Prettier. Licence
+headers: `make headers`, the org's `check-headers` gate, which reads
+`.go`/`.py`/`.sh` and C++ only, so `tools/check-web-headers.py` checks the
+`.ts`/`.tsx`/`.js`/`.mjs` files.
 
 ## CI map
 
 | Workflow | What it checks | Required |
 | --- | --- | --- |
+| `frontend.yml` | lint, typecheck, unit tests, build, browser smoke + axe | yes (`frontend`) |
 | `org-sync.yml` | the org-managed files match the pinned templates | yes (`check / org-sync`) |
 | `licence.yml` | SPDX headers and the licence texts | yes (`headers / licence`) |
 | `pr-title.yml` | the PR title is a lowercase Conventional Commit | yes (`title / title`) |

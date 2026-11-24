@@ -7,7 +7,7 @@ before changing anything. Org-wide conventions:
 
 ## What this repo is
 
-**Status: planned (swarm-routing/.github#672).** Nothing is built yet: the plan is #1.
+**Status: skeleton (#8).** `frontend/` holds the React, TypeScript and Vite shell; the rest of #1 waits for the maintainer (decision 23, amended 2026-11-24).
 
 swarm-web-ui, the org's unified web frontend (swarm-routing/.github#674): first an offline replay of standardized artifact bundles (`probes.v1.jsonl`, `summary.v1.json`) with a topology and mobility playback canvas and paired-delta KPI charts; then a lightweight daemon to author scenarios and run them in sim-containers images.
 
@@ -16,7 +16,14 @@ swarm-web-ui, the org's unified web frontend (swarm-routing/.github#674): first 
 ```bash
 make help    # the org's standard target names: build, test, lint, format, check, clean, shell, ci
 make check   # the local gates: lint, test, licence headers, org-sync (CI also checks the PR title and the review gate)
+make build   # frontend/: npm ci, then vite build into frontend/dist
+make test    # frontend/: tsc --noEmit, then the Vitest unit tests
+make lint    # actionlint, ESLint, Prettier --check, tools/check-web-headers.py
+make smoke   # the build in headless Chromium: no console error, axe clean (CHROMIUM=/path/to/chrome)
 ```
+
+npm is build-time only; every dependency is pinned exactly and locked
+(`frontend/package-lock.json`); add one with `npm install --save-exact`.
 
 ## Golden rules (invariants — do not break)
 

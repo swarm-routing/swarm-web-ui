@@ -3,9 +3,12 @@
 swarm-web-ui's release ladder. The org's whole plan, and why this track
 waits, is the [org ROADMAP](https://github.com/swarm-routing/.github/blob/main/ROADMAP.md).
 
-**Status: deferred (decision 23, swarm-routing/.github#672).** Nothing
-deferred starts by itself: no code lands and no `release:*` label goes on
-#1's or #2's children until the maintainer re-plans the track. The stack is
+**Status: skeleton only (decision 23, swarm-routing/.github#672, amended
+2026-11-24).** The maintainer lifted decision 23 for setup and a building,
+tested skeleton (swarm-routing/.github#881; ROADMAP, swarm-routing/.github#893):
+the frontend scaffold (#8) lands. Nothing else of #1 or #2 starts, and no
+release is cut and no `release:*` label is set, until the maintainer re-plans
+the track. The stack is
 decided ([ADR-0002](adr/0002-web-first-client-with-a-go-daemon.md)); the
 order of the work is epic #1's checklist.
 
