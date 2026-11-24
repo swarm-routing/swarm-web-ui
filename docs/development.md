@@ -88,9 +88,12 @@ repos/swarm-routing/swarm-web-ui/rules/branches/main`), applied from
 
 ## Release
 
-Nothing is released yet. A version is cut as
+Nothing is released yet. `.github/workflows/release.yml` calls the org's
+reusable-release.yml; a version is cut on the maintainer's request only, as
 [CONTRIBUTING "Cutting a release"](https://github.com/swarm-routing/.github/blob/main/CONTRIBUTING.md#cutting-a-release)
-says, once a `release.yml` and a ladder in `docs/roadmap.md` exist.
+says, once its `docs/roadmap.md` row and `release:vX.Y.Z` issues are done.
+Commitizen (`.cz.toml`) bumps the version in `CITATION.cff`; `make dist`
+packs the source tree at HEAD into `dist/swarm-web-ui-<version>.tar.gz`.
 
 ## Troubleshooting
 

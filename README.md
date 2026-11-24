@@ -3,7 +3,7 @@
 <!-- org-sync:begin badges -->
 | Group | Badges |
 | --- | --- |
-| Release | [![Licence: MIT OR GPL-2.0-only](https://img.shields.io/badge/licence-MIT%20OR%20GPL--2.0--only-blue)](LICENSING.md) |
+| Release | [![Release](https://img.shields.io/github/v/release/swarm-routing/swarm-web-ui?sort=semver&cacheSeconds=1800)](https://github.com/swarm-routing/swarm-web-ui/releases) [![Cite](https://img.shields.io/badge/cite-CITATION.cff-blue)](CITATION.cff) [![Licence: MIT OR GPL-2.0-only](https://img.shields.io/badge/licence-MIT%20OR%20GPL--2.0--only-blue)](LICENSING.md) |
 | Trust | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/swarm-routing/swarm-web-ui/badge)](https://scorecard.dev/viewer/?uri=github.com/swarm-routing/swarm-web-ui) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17078/badge)](https://www.bestpractices.dev/projects/17078) |
 | Community & docs | [![Colony Arena: swarm-web-ui](https://img.shields.io/badge/Colony%20Arena-project%20page-orange)](https://swarm-routing.github.io/projects/swarm-web-ui/) [![Open RCAPA](https://img.shields.io/github/issues/swarm-routing/swarm-web-ui/rcapa?label=open%20RCAPA&color=blue)](https://github.com/swarm-routing/swarm-web-ui/blob/main/docs/rcapa/README.md) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow)](https://www.conventionalcommits.org) |
 <!-- org-sync:end badges -->
@@ -23,6 +23,16 @@ read a red run. How changes are proposed, reviewed and released is the org's
 Whether a regression here gets an RCAPA (root cause analysis with corrective
 and preventive actions), and how: [docs/rcapa/README.md](docs/rcapa/README.md).
 <!-- org-sync:end develop -->
+
+<!-- org-sync:begin citing -->
+## Releases & citing
+
+Versions follow [SemVer](https://semver.org). Each release is listed under [Releases](https://github.com/swarm-routing/swarm-web-ui/releases), built by the org's release workflow.
+
+To cite this repository, use the “Cite this repository” button (from [CITATION.cff](CITATION.cff)). Its releases are not archived on Zenodo, so it has no DOI: name the release you used by its tag.
+
+Using it in your work? Contributions are welcome, and citing it helps just as much.
+<!-- org-sync:end citing -->
 
 ## Epics
 
