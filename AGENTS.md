@@ -84,6 +84,21 @@ Org-wide (1–9), then this repo's own.
    that anything shipped needs live in `tools/` (AntHocNet ADR-0014).
 <!-- org-sync:end org-rules -->
 
+10. **No routing logic in the UI.** The workbench shows and launches
+    simulations; it never implements, re-implements or patches a protocol.
+    Runs execute the protocols' own `core/` inside their simulators
+    (sim-containers images), as the Colony Arena site's ADR keeps routing
+    logic out of the site (decision 17, swarm-routing/.github#672;
+    [ADR-0002](docs/adr/0002-web-first-client-with-a-go-daemon.md)).
+11. **Every number comes from the record.** KPIs and paired deltas are read
+    from `summary.v1.json`, benchmarks data or `bench_parse` output, never
+    computed from scratch in the client (#11).
+12. **Deterministic.** A run's seed gives the same output, and replay is a
+    pure function of the bundle and the timeline position: the same bundle
+    and time give the same frame state (#13). No `Math.random()`,
+    wall-clock time or unordered iteration reaches what is rendered or
+    exported; any randomness takes the bundle's seed (golden rule 5).
+
 ## Conventions
 
 <!-- org-sync:begin conventions -->
