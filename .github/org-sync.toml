@@ -4,6 +4,11 @@ kind = "site"
 bestpractices_project = "17078"
 title = "swarm-web-ui"
 dual = [""]
+# CITATION.cff seed and cite badge (swarm-routing/.github#881: setup with release.yml).
+# Whether releases are archived on Zenodo is the maintainer's call with the first
+# release; until then release.yml passes no `zenodo: true` and this says so.
+citation = true
+zenodo = false
 
 [docs]
 arena_id = "swarm-web-ui"  # its id in swarm-routing.github.io site/hub/projects.json (swarm-routing/swarm-routing.github.io#312)

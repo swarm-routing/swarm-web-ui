@@ -6,9 +6,12 @@ waits, is the [org ROADMAP](https://github.com/swarm-routing/.github/blob/main/R
 **Status: skeleton only (decision 23, swarm-routing/.github#672, amended
 2026-11-24).** The maintainer lifted decision 23 for setup and a building,
 tested skeleton (swarm-routing/.github#881; ROADMAP, swarm-routing/.github#893):
-the frontend scaffold (#8) lands. Nothing else of #1 or #2 starts, and no
-release is cut and no `release:*` label is set, until the maintainer re-plans
-the track. The stack is
+the frontend scaffold (#8) landed. On 2026-11-25 the maintainer re-planned
+#7 (the types generated from the shared schemas) as the next issue (#1,
+[comment](https://github.com/swarm-routing/swarm-web-ui/issues/1#issuecomment-7148393299)).
+Nothing else of #1 or #2 starts, and no release is cut and no `release:*`
+label is set, until the maintainer re-plans it. Zenodo archiving is switched
+on just before v0.1.0, so the first release gets a DOI. The stack is
 decided ([ADR-0002](adr/0002-web-first-client-with-a-go-daemon.md)); the
 order of the work is epic #1's checklist.
 

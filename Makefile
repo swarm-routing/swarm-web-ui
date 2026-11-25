@@ -15,7 +15,7 @@ DOCKERFILE ?= Dockerfile
 BUILD_ARGS ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help build test smoke lint format check clean shell ci headers
+.PHONY: help build test smoke lint format check clean shell ci headers dist
 
 help: ## list the targets
 	@awk 'BEGIN{FS=":.*## "} /^[a-zA-Z0-9_-]+:.*## /{printf "  %-16s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -58,6 +58,12 @@ headers: org-tools ## licence headers (org rule 1): the Go gate CI runs, in dock
 check: lint test headers org-sync-check ## everything CI gates on
 
 ci: check ## exactly what CI runs
+
+dist: ## the release asset: dist/swarm-web-ui-<version>.tar.gz, the source tree at HEAD
+	@v="$${RELEASE_VERSION:-$$(python3 -I -c 'import tomllib; print(tomllib.load(open(".cz.toml", "rb"))["tool"]["commitizen"]["version"])')}" || exit $$?; \
+	[ -n "$$v" ] || { echo "make dist: no version (RELEASE_VERSION or .cz.toml)" >&2; exit 1; }; \
+	mkdir -p dist && git archive --format=tar.gz --prefix="swarm-web-ui-$$v/" -o "dist/swarm-web-ui-$$v.tar.gz" HEAD && \
+	echo "dist/swarm-web-ui-$$v.tar.gz"
 
 # org-sync:begin org-tools
 # The org tooling (check-headers, org-sync): a shallow clone, refreshed to ORG_REF,
