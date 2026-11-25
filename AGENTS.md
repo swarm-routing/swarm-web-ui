@@ -23,7 +23,7 @@ make smoke   # the build in headless Chromium: no console error, axe clean (CHRO
 ```
 
 npm is build-time only; every dependency is pinned exactly and locked
-(`frontend/package-lock.json`); add one with `npm install --save-exact`.
+(`frontend/package-lock.json`); add one with `cd frontend && npm install --save-exact <package>`.
 
 ## Golden rules (invariants — do not break)
 

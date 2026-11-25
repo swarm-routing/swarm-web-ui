@@ -6,7 +6,7 @@
   "license": "MIT OR GPL-2.0-only",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "dev": "vite",

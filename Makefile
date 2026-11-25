@@ -21,30 +21,32 @@ help: ## list the targets
 	@awk 'BEGIN{FS=":.*## "} /^[a-zA-Z0-9_-]+:.*## /{printf "  %-16s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 FRONTEND := frontend
+# touched only after npm ci succeeds, so a failed install is retried (`make clean` forces one)
+DEPS_STAMP := $(FRONTEND)/.deps-stamp
 
-$(FRONTEND)/node_modules: $(FRONTEND)/package.json $(FRONTEND)/package-lock.json
+$(DEPS_STAMP): $(FRONTEND)/package.json $(FRONTEND)/package-lock.json
 	cd $(FRONTEND) && npm ci --no-audit --no-fund
 	@touch $@
 
-build: $(FRONTEND)/node_modules ## build what this repo ships: the frontend's production build (frontend/dist)
+build: $(DEPS_STAMP) ## build what this repo ships: the frontend's production build (frontend/dist)
 	cd $(FRONTEND) && npm run build
 
-test: $(FRONTEND)/node_modules ## the fast tests CI runs on every PR: typecheck and unit tests
+test: $(DEPS_STAMP) ## the fast tests CI runs on every PR: typecheck and unit tests
 	cd $(FRONTEND) && npm run typecheck && npm test
 
 smoke: build ## browser smoke + axe on the build (CHROMIUM=/path/to/chrome to use a local browser)
 	cd $(FRONTEND) && npm run smoke
 
-lint: $(FRONTEND)/node_modules ## static checks, no changes: actionlint, ESLint, Prettier, web licence headers
+lint: $(DEPS_STAMP) ## static checks, no changes: actionlint, ESLint, Prettier, web licence headers
 	actionlint
 	cd $(FRONTEND) && npm run lint
 	python3 -I tools/check-web-headers.py
 
-format: $(FRONTEND)/node_modules ## apply the formatters
+format: $(DEPS_STAMP) ## apply the formatters
 	cd $(FRONTEND) && npm run format
 
 clean: ## remove build outputs
-	rm -rf $(FRONTEND)/dist $(FRONTEND)/node_modules
+	rm -rf $(FRONTEND)/dist $(FRONTEND)/node_modules $(DEPS_STAMP)
 
 shell: ## an interactive shell in the dev image with this repo at /src
 	@command -v docker >/dev/null || { echo "make shell: docker not found (Docker Desktop, Colima, or docker.io)" >&2; exit 127; }

@@ -44,9 +44,14 @@ const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: p
 try {
   const page = await browser.newPage();
   page.on('pageerror', (e) => fail(`uncaught: ${e.message}`));
+  const health = new URL('api/health', url).href;
   page.on('console', (m) => {
-    // the 404 of /api/health is the expected "no daemon" answer
-    if (m.type() === 'error' && !/404/.test(m.text())) fail(`console: ${m.text()}`);
+    // only the 404 of /api/health is expected (the "no daemon" answer); every other error fails
+    const expected = m.location().url === health && /status of 404/.test(m.text());
+    if (m.type() === 'error' && !expected) fail(`console: ${m.text()} (${m.location().url})`);
+  });
+  page.on('response', (r) => {
+    if (r.status() >= 400 && r.url() !== health) fail(`HTTP ${r.status()}: ${r.url()}`);
   });
   await page.goto(url);
   await page.getByText('Offline replay: no daemon.').waitFor({ timeout: 10000 });

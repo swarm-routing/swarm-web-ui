@@ -7,7 +7,9 @@ This guide says what runs today; each section grows with the code.
 ## Prerequisites
 
 GNU Make, git, Python 3.11 or newer (the org tooling `make check` fetches),
-Node.js 22 or newer with npm (build-time only: `frontend/.nvmrc`), and Docker
+Node.js `^22.22.2 || ^24.15.0 || >=26.0.0` with npm (build-time only; the
+range the locked packages accept, `engines` in `frontend/package.json`; CI
+uses `frontend/.nvmrc`), and Docker
 for `make shell`. The browser smoke needs a Chromium: `npx playwright-core
 install chromium` in `frontend/`, or `CHROMIUM=/path/to/chrome`.
 
@@ -24,8 +26,9 @@ No submodules or sibling checkouts are needed.
 
 The frontend's npm packages, every version pinned exactly in
 `frontend/package.json` and locked in `frontend/package-lock.json`; the make
-targets install them with `npm ci`. Add one with `npm install --save-exact`
-(`frontend/.npmrc` sets it). `make check` also fetches swarm-routing/.github's
+targets install them with `npm ci` (`make clean` forces a fresh install).
+Add one with `cd frontend && npm install --save-exact <package>`
+(`frontend/.npmrc` sets `save-exact` too). `make check` also fetches swarm-routing/.github's
 tooling into `~/.cache/swarm-routing/dotgithub` (the licence-header gate and
 org-sync).
 
