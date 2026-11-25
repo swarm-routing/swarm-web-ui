@@ -15,32 +15,45 @@ DOCKERFILE ?= Dockerfile
 BUILD_ARGS ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help build test lint format check clean shell ci headers
+.PHONY: help build test smoke lint format check clean shell ci headers
 
 help: ## list the targets
 	@awk 'BEGIN{FS=":.*## "} /^[a-zA-Z0-9_-]+:.*## /{printf "  %-16s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-build: ## build what this repo ships
-	@echo "make build: nothing to do in this repo (kind site)"
+FRONTEND := frontend
+# touched only after npm ci succeeds, so a failed install is retried (`make clean` forces one)
+DEPS_STAMP := $(FRONTEND)/.deps-stamp
 
-test: ## the fast tests CI runs on every PR
-	@echo "make test: nothing to do in this repo (kind site)"
+$(DEPS_STAMP): $(FRONTEND)/package.json $(FRONTEND)/package-lock.json
+	cd $(FRONTEND) && npm ci --no-audit --no-fund
+	@touch $@
 
-lint: ## static checks, no changes
+build: $(DEPS_STAMP) ## build what this repo ships: the frontend's production build (frontend/dist)
+	cd $(FRONTEND) && npm run build
+
+test: $(DEPS_STAMP) ## the fast tests CI runs on every PR: typecheck and unit tests
+	cd $(FRONTEND) && npm run typecheck && npm test
+
+smoke: build ## browser smoke + axe on the build (CHROMIUM=/path/to/chrome to use a local browser)
+	cd $(FRONTEND) && npm run smoke
+
+lint: $(DEPS_STAMP) ## static checks, no changes: actionlint, ESLint, Prettier, web licence headers
 	actionlint
+	cd $(FRONTEND) && npm run lint
+	python3 -I tools/check-web-headers.py
 
-format: ## apply the formatters
-	@echo "make format: nothing to do in this repo (kind site)"
+format: $(DEPS_STAMP) ## apply the formatters
+	cd $(FRONTEND) && npm run format
 
 clean: ## remove build outputs
-	@echo "make clean: nothing to do in this repo (kind site)"
+	rm -rf $(FRONTEND)/dist $(FRONTEND)/node_modules $(DEPS_STAMP)
 
 shell: ## an interactive shell in the dev image with this repo at /src
 	@command -v docker >/dev/null || { echo "make shell: docker not found (Docker Desktop, Colima, or docker.io)" >&2; exit 127; }
 	docker run --rm -it -v "$(CURDIR):/src" -w /src $(if $(PLATFORM),--platform $(PLATFORM)) $(NS3_IMAGE) bash
 
 headers: org-tools ## licence headers (org rule 1): the Go gate CI runs, in docker or built with go
-	"$(ORG_DIR)/tools/checks/check-headers.sh" --dual '' --core core/ .
+	"$(ORG_DIR)/tools/checks/check-headers.sh" --dual 'frontend/ tools/' --core core/ .
 
 check: lint test headers org-sync-check ## everything CI gates on
 

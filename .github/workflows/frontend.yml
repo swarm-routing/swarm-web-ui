@@ -1,0 +1,60 @@
+# Copyright (c) 2026 Daniel Joppi (https://github.com/swarm-routing)
+# SPDX-License-Identifier: MIT OR GPL-2.0-only
+name: Frontend
+
+# The frontend's gate (#8): lint (ESLint, Prettier, web licence headers),
+# typecheck, unit tests, the production build, then the browser smoke with
+# axe on that build, as the Colony Arena site runs it (#14). Runs on every PR
+# with no `paths:` filter, so it can be a required check.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:  # the merge queue runs the required checks on each group (swarm-routing/.github#130)
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: frontend   # the required check's name ([settings] required_checks)
+    runs-on: ubuntu-24.04   # Playwright's Chromium is not supported on ubuntu-26.04 (AntHocNet #847)
+    timeout-minutes: 20
+    steps:
+      - name: Harden the runner (audit egress)
+        uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c # v2.23.0
+        timeout-minutes: 2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 3
+        with:
+          node-version-file: frontend/.nvmrc
+      - name: Install (npm ci, from package-lock.json)
+        working-directory: frontend
+        timeout-minutes: 5
+        run: node --version && npm ci --no-audit --no-fund
+      - name: Lint
+        timeout-minutes: 5
+        run: |
+          cd frontend && npm run lint && cd ..
+          python3 -I tools/check-web-headers.py
+      - name: Typecheck and unit tests
+        working-directory: frontend
+        timeout-minutes: 5
+        run: npm run typecheck && npm test
+      - name: Production build
+        working-directory: frontend
+        timeout-minutes: 5
+        run: npm run build
+      - name: Install Chromium for the smoke
+        working-directory: frontend
+        timeout-minutes: 8
+        run: npx --no-install playwright-core install --with-deps chromium
+      - name: Browser smoke + axe
+        working-directory: frontend
+        timeout-minutes: 3
+        run: npm run smoke
