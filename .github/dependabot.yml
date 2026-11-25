@@ -26,3 +26,9 @@ updates:
           - "github/codeql-action*"
     ignore:
       - dependency-name: "swarm-routing/.github*"
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(deps)"
